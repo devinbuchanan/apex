@@ -22,6 +22,9 @@ struct apexApp: App {
                 OnboardingView()
                     .environment(\.managedObjectContext, stack.context)
             }
+            MainTabView()
+            HomeView()
+                .environment(\.managedObjectContext, stack.context)
         }
     }
 }
