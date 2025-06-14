@@ -10,3 +10,11 @@ This repository contains the Apex sample iOS application. The project is a simpl
 The `Info.plist` includes usage descriptions required by iOS. See `apex/Info.plist` for details.
 
 Tests can be run with `xcodebuild test` on macOS.
+
+## User Profile
+
+The app stores demographics and preferences in a `UserProfileModel`. This struct
+is `Codable` and syncs through CloudKit. Users can enter their information
+during onboarding and update it later from the Profile tab. Fields include name,
+age, height, starting/current/goal weight, body fat percentage, activity level,
+dietary preferences, GLP‑1 usage and preferred coach personality.
