@@ -33,6 +33,7 @@ struct apexTests {
         profile.bodyFatPercentage = 0
         profile.height = 180
         profile.joinDate = Date()
+        profile.syncHealthKit = false
         try context.save()
 
         let fetch = try context.fetch(UserProfile.fetchRequest())

@@ -35,6 +35,7 @@ class HomeViewModel: ObservableObject {
         profile.height = 0
         profile.joinDate = Date()
         profile.accountType = "guest"
+        profile.syncHealthKit = false
         save()
         fetchProfiles()
     }

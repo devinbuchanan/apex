@@ -4,7 +4,7 @@ import CoreData
 
 class OnboardingCoordinator: ObservableObject {
     enum Step: Int, CaseIterable {
-        case age, gender, height, weight, goal, activity, dietaryPrefs, glp1, coachPersonality
+        case age, gender, height, weight, goal, activity, dietaryPrefs, glp1, coachPersonality, healthKit
     }
 
     @Published var step: Step
@@ -17,6 +17,7 @@ class OnboardingCoordinator: ObservableObject {
     @Published var dietaryPrefs: String = ""
     @Published var usesGLP1: Bool = false
     @Published var coachPersonality: String = ""
+    @Published var enableHealthKit: Bool = false
     @Published var error: String?
 
     @AppStorage("onboardingStep") private var savedStep: Int = 0
@@ -31,7 +32,7 @@ class OnboardingCoordinator: ObservableObject {
 
     func next() {
         guard validateCurrentStep() else { return }
-        if step == .coachPersonality {
+        if step == .healthKit {
             completeOnboarding()
             return
         }
@@ -67,6 +68,8 @@ class OnboardingCoordinator: ObservableObject {
             break
         case .coachPersonality:
             guard !coachPersonality.isEmpty else { error = "Choose a coach style"; return false }
+        case .healthKit:
+            break
         }
         return true
     }
@@ -91,8 +94,9 @@ class OnboardingCoordinator: ObservableObject {
         profile.usesGLP1 = usesGLP1
         profile.coachPersonality = coachPersonality
         profile.hasCompletedOnboarding = true
-        profile.onboardingStep = Int16(Step.coachPersonality.rawValue)
+        profile.onboardingStep = Int16(Step.healthKit.rawValue)
         profile.accountType = "guest"
+        profile.syncHealthKit = enableHealthKit
         do {
             try stack.saveContext()
             hasCompleted = true

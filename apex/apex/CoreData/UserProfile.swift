@@ -21,6 +21,7 @@ public class UserProfile: NSManagedObject {
     @NSManaged public var onboardingStep: Int16
     @NSManaged public var hasCompletedOnboarding: Bool
     @NSManaged public var accountType: String?
+    @NSManaged public var syncHealthKit: Bool
 }
 
 extension UserProfile {
@@ -43,7 +44,8 @@ extension UserProfile {
             usesGLP1: usesGLP1,
             dietaryPreferences: dietaryPreferences ?? "",
             coachType: coachPersonality ?? "",
-            accountType: accountType ?? "guest"
+            accountType: accountType ?? "guest",
+            syncHealthKit: syncHealthKit
         )
     }
 
@@ -62,6 +64,7 @@ extension UserProfile {
         dietaryPreferences = model.dietaryPreferences
         coachPersonality = model.coachType
         accountType = model.accountType
+        syncHealthKit = model.syncHealthKit
     }
 }
 extension UserProfile: Identifiable {}

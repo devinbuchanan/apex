@@ -36,7 +36,8 @@ class CoreDataStack {
             attribute(name: "coachPersonality", type: .stringAttributeType, optional: true),
             attribute(name: "onboardingStep", type: .integer16AttributeType),
             attribute(name: "hasCompletedOnboarding", type: .booleanAttributeType),
-            attribute(name: "accountType", type: .stringAttributeType, optional: true)
+            attribute(name: "accountType", type: .stringAttributeType, optional: true),
+            attribute(name: "syncHealthKit", type: .booleanAttributeType)
         ]
 
         let food = NSEntityDescription()

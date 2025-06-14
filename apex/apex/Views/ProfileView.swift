@@ -42,10 +42,16 @@ struct ProfileView: View {
                         Toggle("Using GLP-1 Medication", isOn: $formData.usesGLP1)
                         TextField("Dietary Preferences", text: $formData.dietaryPreferences)
                         TextField("Coach Personality", text: $formData.coachType)
+                        Toggle("Sync HealthKit", isOn: $formData.syncHealthKit)
                     }
                 }
                 .onAppear {
                     formData = profile.toModel()
+                }
+                .onChange(of: formData.syncHealthKit) { enabled in
+                    if enabled {
+                        HealthKitService.shared.requestAuthorization()
+                    }
                 }
                 Button("Save") {
                     viewModel.updateProfile(with: formData)

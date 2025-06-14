@@ -52,6 +52,7 @@ struct ContentView: View {
             profile.height = 0
             profile.joinDate = Date()
             profile.accountType = "guest"
+            profile.syncHealthKit = false
             try? moc.save()
         }
     }
