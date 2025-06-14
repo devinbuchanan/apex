@@ -15,3 +15,4 @@ extension FoodLog {
         return NSFetchRequest<FoodLog>(entityName: "FoodLog")
     }
 }
+extension FoodLog: Identifiable {}

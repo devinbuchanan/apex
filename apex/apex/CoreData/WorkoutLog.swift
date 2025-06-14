@@ -15,3 +15,4 @@ extension WorkoutLog {
         return NSFetchRequest<WorkoutLog>(entityName: "WorkoutLog")
     }
 }
+extension WorkoutLog: Identifiable {}
