@@ -6,27 +6,16 @@
 //
 
 import SwiftUI
-import SwiftData
+import CoreData
 
 @main
 struct apexApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    private let stack = CoreDataStack.shared
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.managedObjectContext, stack.context)
         }
-        .modelContainer(sharedModelContainer)
     }
 }

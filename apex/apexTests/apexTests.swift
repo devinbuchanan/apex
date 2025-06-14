@@ -6,12 +6,40 @@
 //
 
 import Testing
+import CoreData
 @testable import apex
 
 struct apexTests {
 
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+    @Test func coreDataAddDelete() async throws {
+        let container = NSPersistentCloudKitContainer(name: "TestModel")
+        let description = NSPersistentStoreDescription()
+        description.type = NSInMemoryStoreType
+        container.persistentStoreDescriptions = [description]
+        container.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Error: \(error)")
+            }
+        }
+        let context = container.viewContext
+
+        let profile = UserProfile(context: context)
+        profile.id = UUID()
+        profile.name = "Test"
+        profile.age = 30
+        profile.weight = 150
+        profile.height = 180
+        profile.joinDate = Date()
+        try context.save()
+
+        let fetch = try context.fetch(UserProfile.fetchRequest())
+        #expect(fetch.count == 1)
+
+        context.delete(profile)
+        try context.save()
+
+        let fetch2 = try context.fetch(UserProfile.fetchRequest())
+        #expect(fetch2.isEmpty)
     }
 
 }
