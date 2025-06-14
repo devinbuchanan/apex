@@ -18,6 +18,7 @@ class ProfileViewModel: ObservableObject {
         do {
             profile = try stack.context.fetch(request).first
         } catch {
+            print("Failed to fetch profile: \(error.localizedDescription)")
             profile = nil
         }
     }
