@@ -69,7 +69,7 @@ class OnboardingCoordinator: ObservableObject {
         case .coachPersonality:
             guard !coachPersonality.isEmpty else { error = "Choose a coach style"; return false }
         case .healthKit:
-            break
+            guard enableHealthKit else { error = "Enable HealthKit to proceed"; return false }
         }
         return true
     }
