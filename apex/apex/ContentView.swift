@@ -6,31 +6,31 @@
 //
 
 import SwiftUI
-import SwiftData
+import CoreData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Environment(\.managedObjectContext) private var moc
+    @FetchRequest(entity: UserProfile.entity(), sortDescriptors: []) private var profiles: FetchedResults<UserProfile>
 
     var body: some View {
         NavigationSplitView {
             List {
-                ForEach(items) { item in
+                ForEach(profiles) { profile in
                     NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                        Text(profile.name)
                     } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                        Text(profile.name)
                     }
                 }
-                .onDelete(perform: deleteItems)
+                .onDelete(perform: deleteProfiles)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
                 ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                    Button(action: addProfile) {
+                        Label("Add Profile", systemImage: "plus")
                     }
                 }
             }
@@ -39,23 +39,31 @@ struct ContentView: View {
         }
     }
 
-    private func addItem() {
+    private func addProfile() {
         withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
+            let profile = UserProfile(context: moc)
+            profile.id = UUID()
+            profile.name = "New User"
+            profile.age = 0
+            profile.weight = 0
+            profile.height = 0
+            profile.joinDate = Date()
+            try? moc.save()
         }
     }
 
-    private func deleteItems(offsets: IndexSet) {
+    private func deleteProfiles(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                modelContext.delete(items[index])
+                let profile = profiles[index]
+                moc.delete(profile)
             }
+            try? moc.save()
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .environment(\.managedObjectContext, CoreDataStack.shared.context)
 }
