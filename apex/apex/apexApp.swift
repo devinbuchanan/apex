@@ -13,6 +13,7 @@ struct apexApp: App {
     private let stack = CoreDataStack.shared
     @StateObject private var auth = AuthViewModel()
     @StateObject private var health = HealthKitService.shared
+    @StateObject private var sync = SyncService.shared
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     var body: some Scene {
@@ -23,16 +24,19 @@ struct apexApp: App {
                         .environment(\.managedObjectContext, stack.context)
                         .environmentObject(auth)
                         .environmentObject(health)
+                        .environmentObject(sync)
                 } else {
                     OnboardingView()
                         .environment(\.managedObjectContext, stack.context)
                         .environmentObject(auth)
                         .environmentObject(health)
+                        .environmentObject(sync)
                 }
             } else {
                 SignInView()
                     .environmentObject(auth)
                     .environmentObject(health)
+                    .environmentObject(sync)
             }
         }
     }
