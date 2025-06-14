@@ -45,6 +45,10 @@ class HomeViewModel: ObservableObject {
     }
 
     private func save() {
-        try? stack.saveContext()
+        do {
+            try stack.saveContext()
+        } catch {
+            print("Failed to save context: \(error.localizedDescription)")
+        }
     }
 }
