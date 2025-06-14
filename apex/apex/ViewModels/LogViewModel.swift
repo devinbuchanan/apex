@@ -17,6 +17,7 @@ class LogViewModel: ObservableObject {
         do {
             logs = try stack.context.fetch(request)
         } catch {
+            print("Failed to fetch logs: \(error.localizedDescription)")
             logs = []
         }
     }
