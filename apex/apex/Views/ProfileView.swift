@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var auth: AuthViewModel
+    @EnvironmentObject var sync: SyncService
     @StateObject private var viewModel = ProfileViewModel()
     @State private var formData = UserProfileModel()
     @State private var showUpgrade = false
@@ -58,6 +59,9 @@ struct ProfileView: View {
                 }
                 .buttonStyle(.borderedProminent)
 
+                SyncStatusView()
+                    .environmentObject(sync)
+
                 if auth.isGuest {
                     Button("Upgrade Account") {
                         showUpgrade = true
@@ -80,4 +84,5 @@ struct ProfileView: View {
     ProfileView()
         .environment(\.managedObjectContext, CoreDataStack.shared.context)
         .environmentObject(AuthViewModel())
+        .environmentObject(SyncService.shared)
 }
