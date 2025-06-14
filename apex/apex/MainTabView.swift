@@ -31,7 +31,7 @@ struct MainTabView: View {
                 }
                 .accessibilityLabel("Coach tab")
 
-            ContentView()
+            Text("Profile")
                 .tabItem {
                     Image(systemName: "person.circle")
                     Text("Profile")
