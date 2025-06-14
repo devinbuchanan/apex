@@ -16,6 +16,7 @@ struct UserProfileModel: Identifiable, Codable {
     var dietaryPreferences: String
     var coachType: String
     var accountType: String // guest or full
+    var syncHealthKit: Bool
 }
 
 extension UserProfileModel {
@@ -36,6 +37,7 @@ extension UserProfileModel {
         self.dietaryPreferences = ""
         self.coachType = ""
         self.accountType = "guest"
+        self.syncHealthKit = false
     }
 
     init?(record: CKRecord) {
@@ -53,6 +55,7 @@ extension UserProfileModel {
             let coachType = record["coachType"] as? String,
             let accountType = record["accountType"] as? String
         else { return nil }
+        let syncHealthKit = record["syncHealthKit"] as? Int ?? 0
 
         self.id = UUID(uuidString: record.recordID.recordName) ?? UUID()
         self.name = name
@@ -68,6 +71,7 @@ extension UserProfileModel {
         self.dietaryPreferences = dietaryPreferences
         self.coachType = coachType
         self.accountType = accountType
+        self.syncHealthKit = syncHealthKit == 1
     }
 
     func toRecord() -> CKRecord {
@@ -88,6 +92,7 @@ extension UserProfileModel {
         record["dietaryPreferences"] = dietaryPreferences as CKRecordValue
         record["coachType"] = coachType as CKRecordValue
         record["accountType"] = accountType as CKRecordValue
+        record["syncHealthKit"] = (syncHealthKit ? 1 : 0) as CKRecordValue
         return record
     }
 }

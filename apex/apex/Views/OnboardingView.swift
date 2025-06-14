@@ -33,6 +33,9 @@ struct OnboardingView: View {
             case .coachPersonality:
                 CoachPersonalityStepView(coordinator: coordinator)
                     .transition(.slide)
+            case .healthKit:
+                HealthKitStepView(coordinator: coordinator)
+                    .transition(.slide)
             }
         }
         .animation(.easeInOut, value: coordinator.step)
@@ -245,6 +248,26 @@ private struct CoachPersonalityStepView: View {
                 Button("Finish") { coordinator.next() }
                     .buttonStyle(.borderedProminent)
             }
+        }
+    }
+}
+
+private struct HealthKitStepView: View {
+    @ObservedObject var coordinator: OnboardingCoordinator
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Sync with HealthKit?")
+                .font(.title)
+            Text("Apex uses your step, workout, sleep and hydration data to personalize your plan.")
+                .multilineTextAlignment(.center)
+            Toggle("Enable HealthKit Sync", isOn: $coordinator.enableHealthKit)
+            Button("Continue") {
+                if coordinator.enableHealthKit {
+                    HealthKitService.shared.requestAuthorization()
+                }
+                coordinator.next()
+            }
+            .buttonStyle(.borderedProminent)
         }
     }
 }
