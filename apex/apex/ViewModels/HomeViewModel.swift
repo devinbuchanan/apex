@@ -28,9 +28,13 @@ class HomeViewModel: ObservableObject {
         profile.id = UUID()
         profile.name = "New User"
         profile.age = 0
-        profile.weight = 0
+        profile.currentWeight = 0
+        profile.startingWeight = 0
+        profile.goalWeight = 0
+        profile.bodyFatPercentage = 0
         profile.height = 0
         profile.joinDate = Date()
+        profile.accountType = "guest"
         save()
         fetchProfiles()
     }

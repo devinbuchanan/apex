@@ -77,7 +77,11 @@ class OnboardingCoordinator: ObservableObject {
         profile.id = UUID()
         profile.name = "User"
         profile.age = Int16(Int(age) ?? 0)
-        profile.weight = Double(weight) ?? 0
+        let wt = Double(weight) ?? 0
+        profile.currentWeight = wt
+        profile.startingWeight = wt
+        profile.goalWeight = wt
+        profile.bodyFatPercentage = 0
         profile.height = Double(height) ?? 0
         profile.joinDate = Date()
         profile.gender = gender
@@ -88,6 +92,7 @@ class OnboardingCoordinator: ObservableObject {
         profile.coachPersonality = coachPersonality
         profile.hasCompletedOnboarding = true
         profile.onboardingStep = Int16(Step.coachPersonality.rawValue)
+        profile.accountType = "guest"
         do {
             try stack.saveContext()
             hasCompleted = true

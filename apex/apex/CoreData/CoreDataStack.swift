@@ -22,7 +22,10 @@ class CoreDataStack {
             attribute(name: "id", type: .UUIDAttributeType),
             attribute(name: "name", type: .stringAttributeType),
             attribute(name: "age", type: .integer16AttributeType),
-            attribute(name: "weight", type: .doubleAttributeType),
+            attribute(name: "currentWeight", type: .doubleAttributeType),
+            attribute(name: "startingWeight", type: .doubleAttributeType),
+            attribute(name: "goalWeight", type: .doubleAttributeType),
+            attribute(name: "bodyFatPercentage", type: .doubleAttributeType),
             attribute(name: "height", type: .doubleAttributeType),
             attribute(name: "joinDate", type: .dateAttributeType),
             attribute(name: "gender", type: .stringAttributeType, optional: true),
@@ -32,7 +35,8 @@ class CoreDataStack {
             attribute(name: "usesGLP1", type: .booleanAttributeType),
             attribute(name: "coachPersonality", type: .stringAttributeType, optional: true),
             attribute(name: "onboardingStep", type: .integer16AttributeType),
-            attribute(name: "hasCompletedOnboarding", type: .booleanAttributeType)
+            attribute(name: "hasCompletedOnboarding", type: .booleanAttributeType),
+            attribute(name: "accountType", type: .stringAttributeType, optional: true)
         ]
 
         let food = NSEntityDescription()

@@ -27,7 +27,10 @@ struct apexTests {
         profile.id = UUID()
         profile.name = "Test"
         profile.age = 30
-        profile.weight = 150
+        profile.currentWeight = 150
+        profile.startingWeight = 150
+        profile.goalWeight = 150
+        profile.bodyFatPercentage = 0
         profile.height = 180
         profile.joinDate = Date()
         try context.save()

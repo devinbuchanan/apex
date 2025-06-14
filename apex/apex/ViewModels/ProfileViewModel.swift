@@ -22,4 +22,15 @@ class ProfileViewModel: ObservableObject {
             profile = nil
         }
     }
+
+    func updateProfile(with model: UserProfileModel) {
+        guard let profile = profile else { return }
+        profile.update(from: model)
+        do {
+            try stack.saveContext()
+            fetchProfile()
+        } catch {
+            print("Failed to save profile: \(error.localizedDescription)")
+        }
+    }
 }
