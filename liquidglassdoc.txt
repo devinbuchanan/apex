@@ -1,0 +1,376 @@
+Liquid Glass in iOS 26: Design and Implementation Guide
+
+Liquid Glass is the centerpiece of iOS 26’s visual overhaul – a new dynamic material that unifies Apple’s design language across platforms. Introduced at WWDC 2025, Liquid Glass combines the optical properties of glass with fluid, organic motion to create interfaces that feel lightweight, immersive, and responsive ￼ ￼. This guide compiles official Apple documentation and WWDC insights on Liquid Glass, covering its design philosophy, Human Interface Guidelines (HIG) usage recommendations, and the practical steps for implementing it in SwiftUI and UIKit. We also highlight related UI changes (new system materials, controls, and frameworks) that accompany the iOS 26 design refresh.
+
+Design Philosophy of Liquid Glass
+
+Liquid Glass represents a “digital meta-material” – rather than mimicking real-world glass, it’s a computational material engineered for dynamic UI effects ￼. Apple describes Liquid Glass as “combining the optical qualities of glass with responsive fluidity”, dynamically bending and shaping light in real time ￼ ￼. Unlike the static frosted blurs of past designs, Liquid Glass introduces lensing: it warps and concentrates light passing through, providing clear separation of foreground elements while letting content shine through underneath ￼. This is a shift from earlier materials that merely scattered or dimmed background content – Liquid Glass sculpts light to delineate interface layers.
+
+Visually, Liquid Glass elements typically take on rounded, floating forms (often capsule shapes) that echo the curved device corners and feel natural for touch ￼. This rounded geometry is integral to the design system’s emphasis on concentricity – UI elements are aligned and nested with consistent corner radii and padding for a harmonious, hardware-aligned look ￼ ￼. The material’s color and brightness continuously adapt based on the content behind it, ensuring it remains legible yet contextually blended (automatically shifting between light and dark appearances, adjusting tint, etc.) ￼ ￼.
+
+Motion is as important as appearance. Liquid Glass was designed with visuals and motion in tandem, giving it an almost lifelike quality ￼. The material responds to user interaction by flexing and “energizing with light” – for example, a gentle glow emanates under your fingertip on touch, rippling through the glass element ￼ ￼. Controls built with Liquid Glass can morph and fluidly animate between states: a button can swell into a menu “bubble,” or a card can seamlessly transform into a full-screen sheet, all while maintaining the illusion of a single continuous glass plane ￼ ￼. These smooth, organic transitions make the UI feel “responsive, satisfying, and alive” ￼, reinforcing hierarchy and context as you navigate (for example, a toolbar can expand or recede gracefully as focus shifts) ￼ ￼. Overall, the philosophy is that interfaces should feel more organic, immersive, and fluid – “like the physical glass of your device is the UI itself” ￼ – blurring the line between hardware and software.
+
+Design Guidelines: When and How to Use Liquid Glass
+
+Apple’s Human Interface Guidelines emphasize using Liquid Glass strategically and sparingly for maximum effect ￼. Because the material naturally draws attention by elevating UI elements above the content, it should be reserved for the most important functional elements – typically navigation and controls, rather than content. Overusing Liquid Glass everywhere can distract from the content it’s meant to showcase. As Apple puts it: “If you apply Liquid Glass effects to a custom control, do so sparingly… Overusing this material in multiple custom controls can provide a subpar user experience by distracting from content. Limit these effects to the most important functional elements in your app.” ￼
+
+✅ Use Liquid Glass for top-level interface elements that float above content and delineate structure, such as: navigation bars, tab bars, toolbars, sidebars, menus, modal sheets, and key interactive controls (e.g. primary buttons, toggles or segmented controls in their active state). These are parts of the UI where a transparent, lens-like backdrop can emphasize hierarchy – separating controls from content and drawing user focus to navigation or actions ￼ ￼. By placing these elements on a Liquid Glass layer, you establish a clear functional “pane” above the app content, improving depth and clarity.
+
+🚫 Avoid using Liquid Glass for content-heavy views or large background containers. For example, do not turn a whole table view or collection list into Liquid Glass – that would make it compete with content rather than highlight it ￼. The HIG advises keeping standard content regions (text bodies, scrollable feeds, cards, etc.) on a normal opaque or translucent background, and using glass material only for the interface chrome. In Apple’s words, “making [a content view] Liquid Glass would make it compete with other elements and muddy the hierarchy” ￼. By confining glass to the navigation layer, you ensure a clean separation: content remains the hero, and the controls are clearly distinct.
+
+🚫 Never stack “glass on glass.” Layering multiple Liquid Glass views on top of each other (e.g. a popup built of glass appearing over a glass background) leads to visual confusion and diminishing returns. The material is most effective as a single backdrop layer; stacking it creates competing translucency and clutter. If you need to place an overlay on a Liquid Glass element (for example, a context menu or a small popup over a glass sidebar), do not make the overlay itself glass. Instead, use a regular translucent background or vibrancy effect for the overlaid element ￼. This makes the overlay feel like a lightweight sheet on top of the glass, rather than another thick glass layer. As Apple suggests, “when placing elements on top of Liquid Glass, avoid applying the material to both layers. Instead, use fills, transparency, and vibrancy for the top elements to make them feel like a thin overlay that is part of the material.” ￼
+
+Ensure sufficient separation between glass and content. Liquid Glass elements should have clear spatial or layering separation from the underlying content to maintain legibility. Typically, the system automatically provides this via padding and the scroll edge effects (discussed later) that gently fade out content as it scrolls under a glass toolbar or nav bar ￼ ￼. Designers should also avoid initial layouts where content sits directly behind a glass element in a jarring way (e.g. text starting under a translucent nav bar without any offset). In steady states (like when an app first launches or a new screen loads), reposition or inset your content if needed so that it doesn’t awkwardly intersect with a glass header or panel ￼. The goal is a clean visual hierarchy: the glass layer floats above, and content is either fully behind (with adaptive fading on scroll) or clearly below it.
+
+Liquid Glass Variants: Regular vs. Clear
+
+iOS 26 offers two variants of Liquid Glass material, Regular and Clear, each with specific use cases ￼ ￼. Both variants share the same core look and feel, but differ in how adaptive/opaque they are:
+	•	Regular – This is the default and most versatile variant. Regular Liquid Glass includes all the dynamic adaptive behaviors: it adjusts its appearance for any background (light or dark), any size, and ensures content on top is legible in all contexts ￼. Regular glass will automatically morph between light and dark modes, increase shadows over busy backgrounds, modulate blur/tint as needed, etc., to maintain clarity ￼ ￼. You can use the Regular variant almost anywhere a glass material is appropriate, and you can confidently place any text or icon on it – the system will ensure sufficient contrast (by flipping colors or adding shadows) so that foreground content remains readable ￼. This is the variant you will use “most of the time” for standard UI components ￼.
+	•	Clear – The Clear variant is more specialized. It is a permanently more transparent, less adaptive style of glass ￼. Unlike Regular, Clear glass does not automatically adjust between light and dark or boost contrast based on background. It lets the richness of underlying content show through more, at the cost of some built-in legibility measures. Because of its increased transparency, Clear glass requires an added dimming layer behind it for text or symbols to be legible ￼ ￼. (The system will automatically darken the backdrop content slightly when needed, especially for larger Clear glass surfaces, but this means the content behind is muted.) Apple cautions that Clear variant should only be used in specific conditions – essentially when the background is visually suitable and the foreground content is naturally high-contrast. According to the guidance, “Clear should only be used when [three] conditions are met: first, the element is over media-rich content; second, your content layer won’t be negatively affected by introducing a dimming layer; and lastly, the content sitting above it is bold and bright.” ￼ In practice, Clear glass might be used for things like a floating panel over a video or photo where you want maximum translucency and the text on the panel is very prominent (large white headings, for example). In all other cases, Regular glass is preferred for its adaptability.
+
+Importantly, do not mix Clear and Regular glass in the same interface ￼. Each variant has a distinct visual weight and behavior; mixing them can look inconsistent. Choose one approach for your app’s glass elements (Regular by default, or Clear for a particular context that warrants it). Also, if you do use Clear glass for a small element (like a tiny control), consider using “localized dimming” – darkening just the area immediately behind the element – so that you don’t overly dim the entire screen ￼. This lets content around the glass retain more vibrancy.
+
+Legibility and Accessibility
+
+Ensuring readability of text and icons on Liquid Glass was a key design focus, and Apple provides built-in behaviors and settings support for this. With the Regular variant, any standard text or SF Symbol placed on a glass background will automatically respond to the background colors: it might flip between light and dark mode (light text on dark backgrounds and vice versa) and even change weight or add an outline to maximize contrast ￼ ￼. Small controls like navigation bars and tab bars will frequently invert from light to dark as content scrolls underneath, to remain discernible ￼. Larger surfaces (like large sidebars or menus) do not abruptly flip colors on background changes (that would be too distracting), but they rely on subtler continuous adjustments to maintain legibility ￼. The system also augments legibility by using shadows and highlights: for example, as dark text scrolls under a glass toolbar, the glass casts a stronger shadow to separate the text ￼ ￼, and bright areas behind glass cause dynamic range shifts to keep foreground content clear ￼.
+
+If you tint glass or its content (discussed below), iOS uses a vibrant rendition of the color that adapts to background context, rather than a flat opaque color ￼. This draws inspiration from real stained glass: the tint’s appearance changes with what’s behind it (hue and brightness adjust) to ensure it doesn’t clash or become illegible ￼.
+
+On the accessibility front, Liquid Glass fully supports dynamic accessibility settings. When the user enables Reduced Transparency, glass elements automatically become “frostier” – increasing blur and opacity to obscure more of the background (making the UI more solid) ￼. With Increase Contrast, glass elements render in a high-contrast mode: they turn predominantly opaque black or white, with a distinct border, to be as clear as possible ￼. And Reduce Motion will tone down or disable the more animated, elastic effects of Liquid Glass (e.g. less bouncy interaction feedback) ￼. These adjustments are applied system-wide to any Liquid Glass component you use, so your app gets them automatically for free. In other words, adopting Liquid Glass means you’re implicitly supporting these accessibility features – Apple’s implementation will handle it. It’s still important to test your app with these assistive settings enabled ￼ ￼ to ensure the experience is acceptable (e.g. check that content behind a frosted glass is still appropriately de-emphasized, etc.). But you generally should not need to write special-case code – just ensure you’re using the standard APIs (which we’ll cover next) rather than custom translucency hacks, and the system will do the rest.
+
+Visual Harmony and App Aesthetics
+
+While Liquid Glass is the headline feature, Apple also refreshed many other design elements in iOS 26 to harmonize with this new material. Colors, typography, and shapes have subtle updates to complement the glass aesthetic ￼ ￼. For example, the system color palette was adjusted to improve hue differentiation against the translucent glass backgrounds (maintaining the “optimistic” feel of iOS colors while making sure, say, a red tint remains visible over various content) ￼ ￼. The San Francisco typeface is now used in bolder weights and is left-aligned in many contexts like alerts and onboarding screens, for better readability at a glance ￼.
+
+One of the biggest changes is a unified approach to corner radius and shape across the UI. With Liquid Glass emphasizing rounded, floating surfaces, Apple standardized shapes into essentially three types (Fixed, Capsule, and Concentric) to ensure all UI components fit together geometrically ￼ ￼. For developers, this means many controls now default to more rounded corners. For instance, most buttons and alerts use capsule or large radius corners by default in the new design, aligning with device corner curvature ￼ ￼. You’ll see this when you adopt the new SDK – previously square-ish elements may become more rounded. It’s advisable to review your app’s custom views for shape consistency: if something looks overly squared or misaligned next to the new system components, consider updating its corner radius or using SwiftUI’s cornerRadius/clipShape or UIKit’s layer.cornerRadius to achieve a more harmonious look ￼ ￼. Apple encourages developers to “harmonize with Liquid Glass” – think of your UI elements playing in the same “musical key” as the system’s, rather than clashing ￼.
+
+Additionally, iconography and imagery in certain contexts have been simplified to reduce visual noise. In particular, iOS 26 adopts monochrome rendering for SF Symbols in toolbars and navigation bars by default ￼. This means icons in those bars will appear in a single tone (no multicolor), usually a subtle gray or matching tint, to keep the focus on content and maintain a clean look ￼. You can still apply accent color when needed (e.g. using SwiftUI’s .tint or UIKit’s tintColor for a call-to-action icon), but the guidance is to do so only to convey meaning (like a primary action), not purely for decoration ￼. The monochrome style paired with glass background helps icons remain legible and not overwhelm the translucent UI.
+
+Apple also introduced a new App Icon style to align with the iOS 26 design language. While app icons are outside your app’s UI implementation, it’s worth noting: icons now support layered depth and subtle materials to complement the glass interface. The WWDC session “Say hello to the new look of app icons” details how app icons can include translucent layers and realistic lighting (hinting at the same “specular and translucent” qualities of Liquid Glass) using a new tool called Icon Composer. If you maintain an app’s icon, consider checking those guidelines so your icon looks at home on the new system – for example, many stock apps gained slight 3D effects or gloss that reflect the Liquid Glass theme. (This is part of the overall system redesign but separate from in-app UI, so we won’t dive deep here.)
+
+With the design philosophy and guidelines in mind, we now turn to implementation: how developers can adopt Liquid Glass in their apps, in both SwiftUI and UIKit.
+
+Using Liquid Glass in SwiftUI
+
+SwiftUI in iOS 26 (and corresponding macOS “Tahoe”) has been updated to automatically use Liquid Glass in standard containers and controls, and provides new APIs for customizing the effect in your own views. The easiest way to adopt the new design is to recompile your app with Xcode 26 and the iOS 26 SDK – many default SwiftUI components will “just work,” picking up the new look with no code changes ￼ ￼. Apple engineers demonstrated this with an existing SwiftUI app: simply building it on iOS 26 instantly gave the app a glassy tab bar, updated navigation bars, etc., without changing a single line of code ￼ ￼. Nonetheless, to get the most out of Liquid Glass, you’ll want to use the new modifiers and adjust your layout for any custom UI elements.
+
+Automatic Adoption in Standard Views
+
+Out of the box, common SwiftUI scene and navigation constructs are Liquid Glass-enabled:
+	•	TabView (for tabbed interfaces) now renders the tab bar as a floating glass bar. The tab bar floats above content and can even minimize during scroll (on iPhone) automatically, keeping focus on content when you scroll down, and reappearing when you scroll up ￼ ￼. No additional code needed – this behavior is built into the system tab bar controller.
+	•	NavigationSplitView on iPad and Mac will show the primary sidebar panel as a Liquid Glass sidebar, lifting it above the content pane ￼ ￼. The sidebar’s appearance dynamically responds to the content behind it – for example, if there’s colorful media in the detail view, subtle hints of that color may “spill” onto the sidebar’s surface and into its shadow, reinforcing depth ￼ ￼. (This effect is achieved via the system’s backdrop sampling – you get it automatically.)
+	•	Standard NavigationStack/NavigationView toolbars and navigation bars are now transparent and use a glass material. The navigation bar (including large titles, if used) sits on a Liquid Glass background that adapts to scroll. Titles and large title backgrounds now seamlessly morph as you scroll or navigate – e.g. the large title might shrink into a regular title within the glass toolbar, rather than scrolling away abruptly ￼ ￼.
+	•	Many standard controls have updated styles that incorporate Liquid Glass during interaction. Toggles, segmented pickers, sliders, etc., will momentarily adopt a glassy appearance when active ￼. For example, a slider’s thumb or track might use the glass material when sliding, giving a little refractive highlight. Similarly, a toggle (switch) might have a translucent background when toggled on. These are subtle, automatic touches to make controls feel “alive” without you doing anything.
+
+Despite the automatic adoption, review your app’s use of background modifiers or custom theming, as they might conflict with the new system materials. For instance, if you had a custom toolbarBackground or UIBlurEffect in use to style a nav bar, consider removing it to let the native glass show through ￼. Apple specifically calls out that if you were using presentationBackground(...) on sheets to give them a custom backdrop, you should remove that so the new default Liquid Glass sheet background can shine ￼ ￼. In short, where you might have previously added blur or vibrancy to achieve a frosted look, those are likely obsolete now – the system does it by default.
+
+The glassEffect Modifier (SwiftUI)
+
+To apply Liquid Glass to your own custom views, SwiftUI introduces the View.glassEffect() modifier. This is the primary API for adding the new material to a SwiftUI view. It functions analogously to older .background(Material.thin) etc., but with far more dynamism. For example, if you have a custom control or a pop-up panel in SwiftUI that you want to appear as a translucent glassy element, you can simply do:
+
+MyCustomCard()
+   .glassEffect()
+
+By default, glassEffect() will render the material in a capsule shape behind your content ￼ ￼. That is, it automatically applies a rounded capsule backdrop that fits the size of the view, so you instantly get a nicely rounded glass bubble containing your view’s contents. If a capsule isn’t appropriate (say you want a different shape), SwiftUI allows you to customize the shape by supplying a shape parameter: e.g. .glassEffect(Rectangle()) or with any Shape you prefer ￼. Under the hood, SwiftUI uses that shape to mask and define the lensing effect region.
+
+Example: If you are building a floating notification banner in SwiftUI, you might wrap its content in a glassEffect with a rounded rectangle shape for a less pill-like form:
+
+VStack {
+   Text("New Message").font(.headline)
+   Text("You have a new notification.")
+}
+.padding()
+.glassEffect(RoundedRectangle(cornerRadius: 20))
+
+This would create a translucent rounded rectangle background that dynamically blurs and lenses whatever is behind the banner.
+
+Beyond shape, you can enhance the effect with tint and interactivity:
+	•	Use the regular .tint(_:) view modifier on content inside the glass to apply a tint color. Tinting a view that’s within a glassEffect causes the glass material itself to adopt a subtle version of that color, much like stained glass. The color is vibrant – meaning it will shift its exact hue/brightness depending on the backdrop – but it generally makes the glass element colored, which can draw attention to important controls ￼ ￼. For instance, you might tint a primary action button’s label to your brand color; the glass behind it will inherit a delicate wash of that color, making the button stand out (yet still translucent) ￼. Apple shows that this new tint technique keeps the transparency and “lightness” of the material while still conveying color, unlike a fully opaque fill which would break the glass illusion ￼ ￼. Use tinting sparingly, only for primary highlights (if you tint every glass element, nothing stands out and it all becomes visually confusing) ￼.
+	•	Apply the interactive effect to make the glass respond to touches. In SwiftUI, you do this by adding the .interactive(_:) modifier on the same view chain as the glass effect (or possibly as a parameter to glassEffect; Apple’s talk phrased it as “add the interactive modifier to the glass effect” ￼). When a glass view is marked interactive, it will exhibit the delightful physics-like behaviors on user interaction: slight scaling/bouncing on touch, internal lighting shimmer, etc. ￼. By default, static glass (like a purely decorative panel) might not do these, but for buttons or other controls you should enable interactivity so the material feels alive. In code, it might look like: .glassEffect(interactive: true) (if provided as a parameter) or possibly something like .glassEffect().glassEffectInteractive() – the exact API can be checked in documentation, but the concept is to turn it on for tappable elements.
+
+Now, a critical piece: when you have multiple glass elements near each other in SwiftUI, you need to group them so they render correctly. This is because a glass material dynamically samples the colors of the scene behind it, but not other glass. If two glass views overlap or sit adjacent independently, each would treat the other as just transparency without refracting it – leading to unnatural results ￼ ￼. The solution is to use a Glass Effect Container.
+
+Grouping Multiple Glass Views: GlassEffectContainer
+
+SwiftUI provides a container view to group related glass effects: GlassEffectContainer { ... }. By wrapping a set of glass views in this container, you tell the system to treat them as one unified “glass surface” for rendering purposes ￼ ￼. This way, the effects can blend with each other and the engine knows to sample the backdrop behind the entire group, not count one glass view as the backdrop of another.
+
+In practice, you use GlassEffectContainer much like other container views. For example:
+
+GlassEffectContainer {
+    HStack(spacing: 16) {
+        IconButton(systemName: "star.fill")
+            .glassEffect()
+        IconButton(systemName: "heart.fill")
+            .glassEffect()
+    }
+}
+
+This might create two glass icon buttons next to each other, and by containerizing them, the area around and between them is handled cohesively (so you don’t get odd seams or double distortions). Apple calls this grouping “essential for visual correctness”, because otherwise “having nearby glass elements in different containers will result in inconsistent behavior” ￼. Inside a container, the glass elements can even physically merge or separate with animations, which looks very fluid. For instance, if you animate two glass circles to move together, when they touch in the same container, they’ll fuse into one larger glass blob (their highlights and lensing merge) ￼. When separating, they kind of split apart seamlessly. These effects come for free when using a container.
+
+If you want to animate views appearing or disappearing in a glass container, you should use the glassEffectID(_:in:) modifier to tag corresponding views between states for smooth morphing ￼ ￼. This works similarly to .matchedGeometryEffect – it helps SwiftUI track that, say, a glass element in one state is the “same” as one in the next state, so it can elegantly animate the shape/morph rather than a sudden replace. Apple’s example was a set of “award badges” that expand out of a button: each badge view had a glassEffectID so that when the button expanded, the badges appeared with a “wonderful fluid morphing” instead of popping in ￼ ￼. When the badges collapse back, the IDs again ensure they “re-absorb gracefully” into the original element ￼. So when building transitions involving glass views, assign unique IDs (from some namespace) to related glass elements in each state.
+
+Built-in Glass Styles: SwiftUI also conveniently offers pre-made Glass button styles. Instead of manually applying glassEffect to a button’s label, you can use .buttonStyle(.glass) for a standard glass button or .buttonStyle(.glassProminent) for a “prominent” variant ￼ ￼. The prominent style is typically a tinted, more eye-catching form (akin to a borderedProminent style but with glass). These styles ensure the button’s entire background is a Liquid Glass capsule and handle states for you. For instance:
+
+Button("Refresh", systemImage: "arrow.clockwise") {
+    // action
+}
+.buttonStyle(.glass)
+
+This would give a nice translucent button that fits in with the iOS 26 design, without extra modifiers. And:
+
+Button("Delete", systemImage: "trash") {
+    // delete action
+}
+.buttonStyle(.glassProminent)
+.tint(.red)
+
+could create a prominent red-tinted glass button suitable for a destructive action (the .tint(.red) in combination with .glassProminent would produce a vibrant red glass effect for that button).
+
+Toolbar items and grouping: SwiftUI has new APIs to manage toolbar item grouping on glass. By default, toolbar items in iOS 26 group together visually (multiple bar buttons might share a single glass background if adjacent). You can insert a ToolbarSpacer to create fixed or flexible gaps that form separate groups ￼. There’s also sharedBackgroundVisibility to control whether an item shares the group background or stands alone ￼. For example, if you want an avatar button in the toolbar to not have any pill background (so it just floats by itself), you can mark it with sharedBackgroundVisibility(.hidden) (the code in Apple’s demo simply said “separate an item into its own group without a background” ￼). On the contrary, if you want a sequence of buttons to all appear in one continuous pill, ensure there’s no unintended spacer between them or use a spacer with hidesSharedBackground set to false in UIKit (SwiftUI generally handles grouping automatically, but understanding this is useful if you see extra backgrounds).
+
+New Search Field Patterns (SwiftUI)
+
+iOS 26 adds new patterns for search bars that SwiftUI can take advantage of with minimal code:
+	•	Embedded Search in Toolbars: On iPhone, it’s now common to have a search field appear at the bottom of the screen (above the keyboard) when activated, and as a icon in the toolbar when inactive ￼ ￼. SwiftUI’s .searchable modifier is enhanced to support this. If you attach .searchable(...) to a NavigationStack or NavigationSplitView, the system will place a search field on a Liquid Glass surface in the appropriate position automatically ￼ ￼. For iPad and Mac toolbars, it appears as a search field in the top trailing corner by default; on iPhone, it auto-transforms to the bottom presentation style ￼ ￼. If the screen size or number of toolbar items demands, the system might collapse the search field into a search button in the toolbar; tapping that expands the full-width field above the keyboard (you can also directly opt into this collapsed style using the new .searchToolbarBehavior(.minimal) modifier, if search isn’t central to your app) ￼.
+	•	Dedicated Search Tab: Many apps (e.g. Mail, Health, etc.) use an entire tab for search. SwiftUI can automatically implement this pattern using the new searchable in combination with .searchScopes or a .searchable on a TabView. Specifically, if you give one of your TabView tabs a role of .search (or use the searchable on the TabView itself), the system will turn that tab into a special search interface: selecting it will replace the tab bar with a search field, and show search suggestions in the content area ￼ ￼. On iPad/Mac, the search field appears centered above the content when that tab is active ￼. The SwiftUI API might look like:
+
+TabView {
+    ContentView().tabItem { Label("Explore", systemImage: "leaf") }
+    SearchResultsView().tabItem { Label("Search", systemImage: "magnifyingglass") }
+        .searchable(text: $query)
+        .searchScopes { /* optional scopes */ }
+        .tabItemRole(.search)
+}
+
+With that, the second tab becomes the search UI that places the field appropriately. The new design ensures a consistent search experience across apps with minimal effort on your part.
+
+In summary, SwiftUI’s built-in scenes are well-prepared for Liquid Glass – you mostly need to remove old styling workarounds and adopt the new modifiers for any custom components. Now, let’s look at the UIKit side, which has an analogous set of features and a few unique APIs for the new design.
+
+Using Liquid Glass in UIKit
+
+For UIKit apps, adopting Liquid Glass and the iOS 26 design requires using the new iOS 26 SDK (Xcode 26). Much of the refresh happens automatically when you rebuild your app with the new SDK, but UIKit also exposes new properties and classes to tweak the behavior and to apply the glass material in custom views ￼ ￼.
+
+Automatic Updates and Preparation
+
+After linking against iOS 26, standard UIKit controls and views will default to the new appearances. Your app’s navigation bars, tab bars, toolbars, etc., will become translucent Liquid Glass surfaces without any code changes ￼ ￼. For example, UITabBarController now uses a glass tab bar that floats and can auto-hide on scroll, and UINavigationBar is transparent with embedded glass buttons. Apple emphasizes that “UIKit’s components and materials have been updated with Liquid Glass”, and your app *“gets this new appearance as soon as you recompile” ￼.
+
+Nonetheless, a prudent first step is to audit any custom UI tweaks you previously did. If you had code to set navBar backgrounds (like UINavigationBarAppearance with a custom blur, or manually adding a blur effect view), you should remove or adjust those to avoid clashing with the new defaults. The same goes for tab bars or any place you may have forced translucency or a solid color – the system likely handles it better now with Liquid Glass. In Apple’s WWDC guidance, they suggest “if you’ve customized your bars, now’s the time to clean them up” to allow the new design to shine through ￼ ￼.
+
+Tab Bars and Split Views
+
+In iOS 26, tab bars float above content on iPhone and can be set to automatically minimize (hide) when the user scrolls down, then reappear on scroll up – similar to Safari’s toolbar behavior. To enable this in UIKit, there is a new property:
+	•	tabBarMinimizeBehavior on UITabBarController. You can set it to .onScrollDown (or other options) to indicate the tab bar should shrink away during downward scrolls ￼ ￼. For example:
+
+tabBarController.tabBarMinimizeBehavior = .onScrollDown
+
+In the TV app example given, the tab bar hides on scroll down and re-expands when scrolling up ￼. This behavior keeps content front-and-center.
+
+The tab bar can also host a bottom accessory view (like the Music app’s mini player) that rides above it. UIKit introduces UITabAccessory and a bottomAccessory property on UITabBarController to manage this ￼ ￼. You can provide a custom view (your mini player UI, for instance) as a UITabAccessory, and when added, the system will display it above the tab bar, matching the tab bar’s Liquid Glass appearance. When the tab bar minimizes, the accessory view animates inline with it – e.g. sliding down to become flush with the hidden tab bar, or popping up when tab bar returns ￼. This ensures the accessory (like playback controls) is still accessible in the collapsed state.
+
+Code example:
+
+let miniPlayerView = MyMiniPlayerViewController()
+tabBarController.bottomAccessory = UITabAccessory(viewController: miniPlayerView, height: 60)
+
+When the tab bar hides, you’d observe the mini player view adjusting its layout (you might need to respond to trait changes – UIKit provides UITabAccessoryEnvironment trait to know if the accessory is inline or not, so you can, say, simplify the mini player UI when it’s squished down) ￼ ￼. In fact, you can register for changes to tabAccessoryEnvironment to update your accessory view’s contents/layout when it transitions between full and inline modes ￼.
+
+On iPad, Apple has unified the concept of tab bars and sidebars. By adopting the new UITab and UITabGroup APIs, a single app can provide both a tab bar and a sidebar navigation, letting users toggle between them for top-level nav (this is part of making UIKit apps more adaptive) ￼ ￼. The key point for design is: when using these, the sidebar on iPad will also be rendered in Liquid Glass, floating over content just like on macOS ￼. The iPad sidebar + tab bar effectively become one flexible navigational component that scales from phone to tablet – so your app’s nav experience feels consistent across devices ￼ ￼.
+
+With sidebars now translucent, Apple encourages a design where the content behind the sidebar is extended and centered for a cohesive look. Many iPad apps in iOS 26 use a full-width hero image or content backdrop that continues behind the sidebar, rather than ending at the edge of the sidebar. For instance, the TV app shows artwork that extends under the floating sidebar, giving an immersive effect ￼. To help developers implement this, UIKit provides UIBackgroundExtensionView – a special view that projects content underneath a sidebar (or other container) to fill the otherwise empty space on the sides ￼ ￼.
+
+Using UIBackgroundExtensionView: You create an instance of this view, assign it a content view (like a UIImageView with your artwork), and add the extension view to your layout behind the sidebar. The extension view will automatically fill the safe area gaps appropriately. For example:
+
+let posterImageView = UIImageView(image: UIImage(named: "poster"))
+let extensionView = UIBackgroundExtensionView()
+extensionView.contentView = posterImageView
+view.addSubview(extensionView)
+
+By default, UIBackgroundExtensionView will place the content view for you (covering the full width behind the sidebar). If you need more control, you can set automaticallyPlacesContentView = false and then manually constrain the contentView within the extension view’s safeArea (as shown in Apple’s sample) ￼ ￼. The idea is to ensure the image spans the entire width including the sidebar inset ￼ ￼. The extension view uses a vibrancy effect to subtly blend the content with the glass of the sidebar, achieving that “content spills under the glass” look ￼. You might use this for any large sidebar (on iPad or Mac) where you want an expansive background image to show through.
+
+Navigation Bars and Toolbars
+
+Navigation bars and toolbars in UIKit get a significant overhaul with Liquid Glass:
+	•	Transparent Background: By default UINavigationBar and UIToolbar in iOS 26 are fully translucent and use the glass material. This means the standardAppearance/scrollEdgeAppearance of nav bars is configured to use a background of type .glass automatically (under the hood). If you had a custom UINavigationBarAppearance that set a solid color or custom blur, you might consider removing it or updating it to .configureWithDefaultBackground() to let the new style in. The new nav bar floats and blends with content; as content scrolls up under it, the aforementioned scroll edge effect will cause the content to fade out right as it hits the bar, ensuring the title and controls remain readable ￼ ￼. You can see this in Mail and other updated apps – list content gently disappears into the header instead of peeking through messily.
+	•	Fluid title transitions: Large titles in a navigation bar now seamlessly transform into the inline title on scroll, with the background adapting. Additionally, UINavigationItem has gained a subtitle property and a largeSubtitleView property ￼ ￼. The subtitle can show secondary info below the title in the nav bar. For example, in Mail, the title might be “Inbox” and subtitle “49 Unread” ￼. In large title mode, you could even place a custom control (like a filter button) as the “subtitle” using largeSubtitleView – it appears below the large title text ￼. These new fields let you present more info in the header in a nicely styled way, and they naturally integrate with the glass backdrop.
+	•	Grouping Bar Button Items: Toolbars (and nav bars, which can have multiple bar button items) now group adjacent items into shared background blobs by default. If you add a series of UIBarButtonItems, the system will determine how to group them. To fine-tune grouping, Apple introduced a property on UIBarButtonItem called hidesSharedBackground. By default, a flexible space or certain separators might break group backgrounds. Setting hidesSharedBackground = false on a UIBarButtonItem (like a flexibleSpace) allows the background to continue across it ￼ ￼. In Apple’s example, they create a toolbar with four icons evenly spaced by flexible spaces, and by ensuring the spaces do not hide the shared background, the entire row of icons shares one continuous translucent background ￼ ￼. This effectively creates a segmented-bar look where the whole toolbar appears as one glass capsule containing all the icons (instead of four separate capsules). Conversely, if you want an item to stand alone with no background, you might insert a fixed-space of 0 points before it (to break grouping) or in some cases use a new .plain style.
+	•	New Button Styles for UIBarButtonItem: In nav bars and toolbars, UIBarButtonItem.style now has a .prominent case to indicate a prominent glass button ￼ ￼. If you set a bar button’s tintColor to a color (say systemOrange) and style = .prominent, the button will render as a tinted glass pill (with that color) instead of the default minimal icon. This is great for highlighting an important action in a toolbar. For example:
+
+let flagItem = UIBarButtonItem(image: UIImage(systemName: "flag.fill"), style: .plain, target: ..., action: ...)
+flagItem.tintColor = .systemOrange
+flagItem.style = .prominent
+
+Now flagItem will appear as an orange glass button in the toolbar ￼ ￼. Regular .plain style bar buttons in toolbars generally appear as just an icon (monochrome) with perhaps a subtle background if grouped. The .prominent elevates it to a filled look. In code, it looks a bit odd that style property is overloaded for this, but that’s how Apple exposed it.
+
+	•	Badges on Bar Items: Although not directly about materials, iOS 26’s UIKit now allows adding badges to any bar button item (similar to the red notification dots in the Tab Bar). In SwiftUI it’s the .badge modifier; in UIKit you can set UIBarButtonItem.badgeColor and badgeValue. This ties into the new design language by providing a system-standard way to indicate notifications on toolbar icons (for example, an inbox icon can show a blue dot or number). It’s worth using this instead of custom badge subviews, to stay consistent.
+
+Scroll Edge Effects (UIKit)
+
+To maintain clarity when content scrolls under glass elements, scroll edge effects are automatically applied in many UIKit containers. A scroll edge effect in iOS 26 is basically a dynamic blur/fade applied to content as it nears a glass header. For instance, in a UITableView under a translucent nav bar, as you scroll the first cells under the nav bar, they’ll fade out (and blur slightly) at the top boundary, preventing text from showing through the nav bar and ensuring a clean separation ￼ ￼. This replaces the old approach of just making the nav bar solid or using a hairline separator.
+
+UIKit gives you some control over these effects:
+	•	Each UIScrollView now has a topEdgeEffect and bottomEdgeEffect property (of type UIScrollEdgeAppearance or similar). You can adjust the style of the effect. By default, it’s a soft gradient blur (“soft” style). If you have a scenario with pinned content that doesn’t scroll (like a pinned header below the glass bar), you might want a hard edge style – which applies a uniform transparency change rather than a gradient ￼ ￼. Apple mentions using the hard style for cases like pinned table headers under a toolbar ￼. In code, you can do:
+
+scrollView.topEdgeEffect.style = .hard
+
+(Conversely .soft is the default.) This property is demonstrated in the sample code ￼.
+
+	•	If you have a custom floating container (like a custom view that should also trigger a scroll edge fade of content behind it), you can use the new UIScrollEdgeElementContainerInteraction. This is an UIInteraction you add to a view that has an associated scroll view and an edge. For example, say you have a custom floating panel at the bottom of the screen that overlaps a scroll view; you want the content to fade out at that bottom edge as it scrolls under. You would do:
+
+let interaction = UIScrollEdgeElementContainerInteraction()
+interaction.scrollView = myScrollView
+interaction.edge = .bottom
+myFloatingPanel.addInteraction(interaction)
+
+This links that floating panel (presumably a translucent glass panel) with the scroll view, so the system applies the scroll-under blur effect on the bottom when needed ￼. It’s essentially opt-in for custom container views that aren’t automatically handled.
+
+By leveraging these, you can ensure legibility at scroll boundaries. If your app had its own workaround for this (like manually adding gradient masks), those can be removed in favor of the system’s scrollEdgeEffect.
+
+Presentations and Transitions
+
+iOS 26 makes modal presentations (like sheets, popovers, alerts) feel more integrated by morphing out of their source controls whenever possible, leveraging Liquid Glass for continuity. UIKit introduces new APIs to facilitate this:
+	•	Morphing Popovers: UIPopoverPresentationController now has a sourceItem property (in addition to the traditional sourceView/sourceRect). You can assign a UIBarButtonItem or UIPopoverPresentationController.SourceItem to it so that the popover’s glass background can visually connect from that item. For example:
+
+popoverPC.sourceItem = myBarButtonItem
+
+This will cause the popover to animate out of the bar button (the bar button might highlight and the popover seems to emerge from it) ￼. This is especially relevant now that bar buttons are often glass – the popover or menu that appears is effectively an extension of that glass surface.
+
+	•	Zoom Transitions for Sheets: There is a new property on UIViewController or segue APIs for specifying a preferred transition style. One new style is .zoom, which can take a closure to identify the source view or bar button item. In Apple’s example, to make a sheet morph out of a toolbar button, they do:
+
+viewController.preferredTransition = .zoom { context in folderBarButtonItem }
+
+This means when presenting viewController as a sheet, it will animate from the folderBarButtonItem (the bar button’s frame) and use a zoom/morph animation ￼. The presented sheet’s Liquid Glass background will seem to grow out of the button. This is very much in line with the design principle of keeping continuity – it avoids a sheet just sliding up from bottom and instead ties it to the invoking element. You can also set a sourceItem for action sheets (UIAlertController with actionSheet style) similarly so that even an action sheet (which appears from bottom) has a reference to pop out of a button ￼.
+
+	•	Dialogs and Alerts: Standard alerts (UIAlertController in alert style) likewise automatically use the new material and morphing if possible. In SwiftUI, an Alert shown from a button will morph from that button’s position; in UIKit if you present an alert without any source, it fades in center as usual, but with the updated look. The updated design uses more rounded corners and bold text for alerts (plus left-aligned text as mentioned).
+
+Overall, these new transitions are largely opt-in, but highly encouraged for a modern feel. If you use UIPopoverPresentationController or UIActivityViewController, definitely set sourceItem (Apple uses the same property on those) so you get the nice effect.
+
+Standard Controls and New UIKit API
+
+UIKit controls are refreshed in tandem with SwiftUI’s changes:
+	•	Buttons: UIKit introduces built-in Glass button configurations. UIButton.Configuration has two new static configs: .glass() and .prominentGlass(). You can now configure any UIButton to these styles easily:
+
+myButton.configuration = .glass()
+// or
+myImportantButton.configuration = .prominentGlass()
+myImportantButton.configuration?.baseForegroundColor = .systemRed  // tint the prominent style red if needed
+
+The .glass() style creates a standard translucent capsule button. The .prominentGlass() style creates a tinted glass button that stands out (like a red “destructive” button, or a highlighted action) ￼ ￼. These correspond to what we saw with SwiftUI’s .buttonStyle(.glass) and .glassProminent. They handle things like ensuring the text color flips appropriately on dark backgrounds, etc.
+Additionally, button sizes: Apple added support for an extra large control size in iOS 26. This means you can now set button.configuration.buttonSize = .large (or maybe .xlarge depending on naming) for a bigger, easier-to-tap button that’s great for spacious layouts ￼. Many default buttons might already pick up a larger size when appropriate (e.g. on iPad forms). Conversely, on Mac, small and mini buttons retain their tighter corners and sizes for dense panels, but large and extra-large on Mac will use the new capsule style ￼ ￼.
+If you need a specific shape on a UIButton regardless of size, UIButton.Configuration still has a cornerStyle you can set (or in code they mentioned the bordered shape – but now presumably you’d use .glass() instead of .bordered if you want the material).
+
+	•	Sliders: UIKit UISlider gained the ability to show tick marks by simply specifying a numberOfTicks or by using the new UISlider.TrackConfiguration. For instance:
+
+slider.trackConfiguration = UISlider.TrackConfiguration(
+    allowsTickValuesOnly: true,
+    neutralValue: 0.0,
+    numberOfTicks: 5
+)
+
+This will display 5 tick marks on the slider (including a neutral midpoint if specified) ￼ ￼. Also, there is a .sliderStyle = .thumbless option for a slider without a thumb (knob) – effectively turning it into a progress bar or selection indicator ￼ ￼. These features aren’t directly about Liquid Glass, but they are part of the “visual updates” in iOS 26’s design overhaul, making controls more informative and customizable.
+
+	•	Switches, Segmented Controls, Steppers: These have updated visuals (softer shapes, new animations) but their APIs remain mostly the same. They automatically adopt the new design. For example, UISwitch might have a more fluid thumb motion now and slightly different proportions. Segmented controls likely have more rounded capsules for selected segments. Check if you had any custom images or drawing in these that might need updating.
+	•	Activity Indicators, Progress Views: The system activity indicator (spinner) might get a design tweak (possibly a slight glassy/translucent effect or just a refined animation) – Apple hasn’t detailed it in code, but visually you might notice changes.
+
+Finally, for custom views in UIKit that you want to give a Liquid Glass appearance, UIKit offers a class UIGlassEffect (a subclass of UIVisualEffect). You will use it with UIVisualEffectView to create glass backdrops in your views. Here’s how:
+
+Applying Liquid Glass in Custom UIKit Views
+
+Using Liquid Glass in your own UIView is similar to using a blur effect in previous iOS, but with new classes:
+	1.	Create a UIVisualEffectView to host the effect (just like you would for a blur). For example:
+
+let effectView = UIVisualEffectView(frame: someFrame)
+containerView.addSubview(effectView)
+
+
+	2.	Create a UIGlassEffect instance. This is analogous to UIBlurEffect(style:) but for Liquid Glass:
+
+let glassEffect = UIGlassEffect()
+effectView.effect = glassEffect
+
+At this point, effectView will render as Liquid Glass. By default, it’s the Regular variant; if there’s an API to choose variant, it might be something like UIGlassEffect(style: .clear) but Apple’s documentation hasn’t explicitly shown it – possibly UIGlassEffect() always gives Regular, and a separate initializer or property would specify Clear. (If needed, consult the header docs for UIGlassEffect.Style.)
+When you first set the effect on a visual effect view, UIKit will automatically play the materialize animation – the glass fades/scales in with that light-bending effect ￼ ￼. Apple notes that “animating setting the effect results in a materialize animation” ￼. So if you do it inside UIView.animate { effectView.effect = glassEffect }, you’ll see the glass smoothly appear ￼. Likewise, animating effectView.effect = nil will dematerialize the glass (nicely fade it out) ￼ ￼.
+
+	3.	Tint and interactive: You can customize the UIGlassEffect object before assigning it:
+	•	glassEffect.tintColor = .systemBlue (for example) will give the glass a blue hue ￼ ￼. As in SwiftUI, the color will adapt vibrantly – it won’t be a flat blue overlay, but a dynamic tint. If you animate from one tint to another by swapping the effect, do it within an animation block for a smooth transition ￼ ￼. And if you have text on top of the glass that you want to turn from tinted to normal, adjust its color simultaneously (e.g., Apple’s code sets label.textColor = .label when adding a tint, implying maybe the text was using a custom color that they revert to default so it can flip appropriately) ￼ ￼.
+	•	glassEffect.isInteractive = true will enable the bounce/glow on touch for that effect ￼ ￼. If the view is a control or will handle touches, set this to true before assigning it to the effect view (or update the effect and animate the assignment) ￼ ￼.
+	4.	Multiple glass subviews: If you have more than one UIVisualEffectView that should act in unison, you have two options:
+	•	Use the same UIGlassEffect instance for both. If you simply create one UIGlassEffect() and pass it to two UIVisualEffectView(effect:) initializations, those two effect views will share the effect’s rendering context ￼ ￼. This effectively groups them.
+	•	Or, more formally, use UIGlassContainerEffect. This is a UIVisualEffect subclass that acts as a container (similar to UICombinerEffect perhaps). You create one:
+
+let containerEffect = UIGlassContainerEffect()
+let containerEffectView = UIVisualEffectView(effect: containerEffect)
+containerEffectView.frame = ... // size of the container
+parentView.addSubview(containerEffectView)
+
+Now, create individual glass subviews without directly adding them to parent; instead, add to the container’s contentView:
+
+let glass1 = UIVisualEffectView(effect: UIGlassEffect())
+let glass2 = UIVisualEffectView(effect: UIGlassEffect())
+containerEffectView.contentView.addSubview(glass1)
+containerEffectView.contentView.addSubview(glass2)
+
+By adding them to a container, they automatically share the same sampling region ￼ ￼. (Note: Apple’s sample actually used the same UIGlassEffect for glass1 and glass2 then added to container – likely both approaches achieve grouping; using the same effect instance might inherently assign them to a common container context.)
+You can adjust containerEffect.spacing to control the margin around grouped elements ￼ ￼. This spacing influences how the glass blobs merge. If spacing is large, the elements need to come closer before their glass merges. If spacing is zero, even slightly adjacent glass might fuse. Apple set an example containerEffect.spacing = 20 to require some gap between grouped items ￼.
+You can animate interesting transformations with this setup. For example, moving two glass views together will cause them to merge into one if they overlap sufficiently (visually the highlights and shadows unify) – Apple showed an example animating two views to the same frame to “merge” ￼ ￼. Conversely, you can split one glass effect into multiple views by initially stacking them then moving them apart (using UIView.performWithoutAnimation to set the start state all together, then animating to final separate frames) ￼ ￼. The container effect makes these transitions smooth and physically convincing.
+
+In UIKit, since you’re manually managing views, remember to also manage z-index (ordering) if needed – e.g., ensure your glass effect view is behind the content that should appear on top of it. A UIVisualEffectView by default affects everything behind it in the view hierarchy, so usually you place labels, buttons, etc., as subviews on top of the effectView (or in the same container’s contentView above the effect subview). Alternatively, you can use UIVisualEffectView.contentView to embed your content so it’s rendered as part of the effect group.
+
+For instance, you might do:
+
+let effectView = UIVisualEffectView(effect: UIGlassEffect())
+effectView.frame = myPanel.bounds
+myPanel.addSubview(effectView)
+effectView.contentView.addSubview(myPanelContentLabel)
+
+This way, myPanelContentLabel is conceptually inside the glass – which might automatically handle things like the label text color flipping (though usually, that’s handled by the material itself reading underlying content, so having it inside contentView might not be strictly required for color flips in this case; but it can ensure the label is considered “above” the glass for contrast purposes).
+
+Dematerialize animation: If you remove a glass effect (setting effect = nil) inside an animation block, the glass will gracefully fade out (and potentially shrink slightly) instead of just disappearing ￼ ￼. Use this when dismissing a custom glass view for a nicer touch.
+
+Modernizing Your UIKit App for iOS 26
+
+To summarize the adoption steps and best practices for UIKit:
+	•	Rebuild with iOS 26 SDK. Observe which parts of your UI automatically get the new design. Remove any conflicting custom theming (especially for navigation bars, tab bars, and grouped table backgrounds).
+	•	Use new UIKit APIs to align with system behavior:
+	•	Enable tabBarMinimizeBehavior if appropriate (most apps with scrollable content in each tab can turn it on for a more immersive feel).
+	•	If your app uses a tab bar on iPad, consider migrating to the new UISplitViewController with UITab/UITabGroup to get the floating sidebar for free ￼.
+	•	Add bottomAccessory to tab bar if you have a persistent overlay (mini player, etc.).
+	•	Update navigation bar usage: adopt navigationItem.subtitle for additional context instead of cramming info into the title; use largeSubtitleView for any persistent control in the nav bar (like a filter button in a Mail inbox) ￼.
+	•	Organize UIBarButtonItems to leverage grouping – remove extraneous spaces if you want items together, or add flexible spaces with hidesSharedBackground=false to group them.
+	•	Use UIBarButtonItem.style = .prominent with a tintColor for key toolbar actions (replacing perhaps your custom colored button image with a standard SF Symbol + tint).
+	•	Replace any custom blur backdrops with UIVisualEffectView(effect: UIGlassEffect()) to get the full dynamic effect.
+	•	Adopt the new search APIs: use navigationItem.searchBarPlacement property to position search. For example, to place a search bar in a toolbar on iPhone, you can now do:
+
+navigationItem.searchBarPlacement = .toolbar
+
+and add navigationItem.searchController as usual – the system will handle the rest. On iPad, you might use .automatic or .navigationBar placement with allowsExternalIntegration = true to allow the search field to live in the title bar when side by side, etc. ￼ ￼. Also if using a UISearchController in a tab context, set that tab’s role to search (in storyboard or via code).
+
+	•	Try out new control features like UISlider ticks for any sliders representing discrete values, or UISegmentedControl new .compactTable style if any (just as an example – iOS 26 might have added styles for Mac idioms).
+
+	•	Test on all form factors. Because iOS 26 aims for cross-platform consistency, see how your app looks on iPad and Mac (if you support Mac Catalyst). The floating sidebars and new windowing could surface issues if your layouts were very static. Ensure that on larger screens your content extends under translucent bars appropriately (utilize UIBackgroundExtensionView if needed to fill gaps). Also test popovers and multiple windows – they should all adopt the new design.
+
+By following these steps, your UIKit app will both look modern and function consistently with Apple’s new system conventions.
+
+Additional iOS 26 Visual Updates Related to Materials
+
+In addition to Liquid Glass, a few other frameworks and design updates are worth noting:
+	•	Icon Composer & SF Symbols 5: Apple introduced Icon Composer, a design tool and framework to create app icons that have layered depth and lighting effects. The new app icon guidelines encourage subtle translucency and highlight to mesh with the overall Liquid Glass aesthetic (e.g. some icons have “cut-out” glass-like shapes or specular highlights). While this doesn’t affect in-app UI coding, developers working on icons should consult the Apple Design Resources for the new App Icon Template which supports adding materials and environment lighting to icons. (WWDC’s “Create icons with Icon Composer” session covers this).
+	•	UIKit for macOS (Mac Catalyst) improvements: Mac Catalyst apps running on macOS “Tahoe” (the macOS version accompanying iOS 26) get a more unified look. Many of the Liquid Glass effects extend to Mac (e.g. Mac toolbars become translucent and use glass material). New Mac control sizes (like an extra large control size) were introduced to accommodate more spacious layouts with glass on desktop ￼ ￼. Mac context menus and sidebar behaviors align with iPad. If you have a Catalyst app, you might need to adjust some Mac-specific UI that previously assumed opaque backgrounds.
+	•	Accented Material for visionOS: Although outside iOS, Apple’s design sessions hint that VisionOS (for spatial computing) uses a variant of these materials (called “accented” rendering for widgets, etc., which likely is similar to tinted glass). If your app has a widget or runs on visionOS, be aware that Liquid Glass principles apply there too – e.g. widgets can have translucent backgrounds with depth.
+	•	Performance considerations: Liquid Glass effects are GPU-intensive due to live rendering of blurs, reflections, and shader effects. Apple has undoubtedly optimized them (likely using Metal and perhaps the new Apple silicon capabilities). But as a developer, keep an eye on performance when using many custom glass views. In general, stick to the built-in components when possible (they share system effects efficiently). If you use dozens of UIVisualEffectView with glass, group them in containers to optimize sampling. And test on older devices for memory and frame rate. Apple did not report specific performance issues, but prudence is advised.
+	•	Testing with Reduced Motion: Because the new design adds lots of subtle animations (things flexing and shimmering), test your app with Reduce Motion enabled to ensure any custom UI still works. The system will disable certain animations (like the “bounce” on interactive glass). Make sure that doesn’t break your layout or logic (it shouldn’t, but e.g. if you assumed an animation completion for some flow, double-check).
+	•	Apple Design Resources: Apple updated their Figma/Sketch UI kits to iOS 26. These include pre-made components with Liquid Glass (for example, new tab bar symbols, new nav bars, etc.). Using these can help designers on your team visualize how your app screens should look in the new style. It’s recommended to download the iOS 26 UI Kit from the Apple Design Resources site to get things like the proper status bar height with floating bars, etc. Apple in WWDC mentioned “new UI kits on Apple Design Resources” alongside the HIG ￼ ￼.
+	•	Human Interface Guidelines: The HIG’s Materials section has been updated with guidance on Liquid Glass usage ￼. Key points from HIG include the recommendation to use Depth and layering thoughtfully (don’t flatten everything on one plane – use glass to create layers), to maintain visual consistency (align with system colors, use system-provided materials rather than custom translucency for consistency across apps), and to ensure accessibility as discussed. It also notes that Liquid Glass is a “dynamic material that unifies the design language across platforms” ￼ – reinforcing that if you adopt it on iOS, your Mac and iPad apps should follow suit for a cohesive brand.
+
+By embracing Liquid Glass and the related design changes, your app not only gains a fresh, modern look but also benefits from the cross-platform coherence Apple has aimed for in this generation. Interfaces become “lighter” (both visually and interactively), content feels more center stage, and the whole experience can feel delightful and responsive for users.
+
+Conclusion
+
+Liquid Glass in iOS 26 marks Apple’s most significant UI design update in over a decade – ushering in a new era of fluid, layered interfaces that simultaneously elevate content and provide intuitive context ￼ ￼. By understanding the design philosophy (glass-like visuals with liquid-like motion), following HIG guidelines on when to use it, and leveraging the new APIs in SwiftUI and UIKit, developers can modernize their apps to align with Apple’s new design language.
+
+In practical terms, adopting Liquid Glass largely means using system components (navigation bars, tab bars, etc.) as provided, removing old customizations, and adding glassEffect or UIGlassEffect where you want custom translucency. The system takes care of adaptivity (light/dark, scrolling effects, accessibility) – you get a lot “for free” by simply using these APIs ￼ ￼. For any custom design elements, Apple has given the tools (like GlassEffectContainer, tinting, interactive toggles) to integrate them seamlessly.
+
+At WWDC, Apple stressed that this is “the start of a new chapter in Apple’s visual and interaction design” – one that is more cohesive across devices and opens possibilities for future AR experiences ￼ ￼. By updating your app now, you not only make it look great on iOS 26, but also position it to blend naturally with Apple’s ecosystem (from iPhones and iPads to visionOS in the future). As you implement Liquid Glass, remember to prioritize clarity (never sacrifice usability for fancy effects) and test thoroughly. If done right, your app can achieve that “striking new look” while remaining familiar and intuitive ￼ ￼ – delighting users with an experience that feels both fresh and unmistakably iOS.
+
+⸻
+
+Sources: Official Apple Developer documentation and WWDC 2024/2025 sessions have been used throughout this guide, including Meet Liquid Glass ￼ ￼ (design principles), Human Interface Guidelines: Materials ￼ (usage recommendations), Build a SwiftUI app with the new design ￼ ￼ and Build a UIKit app with the new design ￼ ￼ (implementation details), Get to know the new design system ￼ ￼, and others. Each quotation is cited inline to the Apple source for verification and further reading.
