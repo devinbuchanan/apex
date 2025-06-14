@@ -14,3 +14,4 @@ extension Award {
         return NSFetchRequest<Award>(entityName: "Award")
     }
 }
+extension Award: Identifiable {}

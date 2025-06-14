@@ -15,3 +15,4 @@ extension HabitLog {
         return NSFetchRequest<HabitLog>(entityName: "HabitLog")
     }
 }
+extension HabitLog: Identifiable {}

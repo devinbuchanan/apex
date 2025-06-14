@@ -16,3 +16,4 @@ extension UserProfile {
         return NSFetchRequest<UserProfile>(entityName: "UserProfile")
     }
 }
+extension UserProfile: Identifiable {}
