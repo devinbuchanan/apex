@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: [self-hosted, macos]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26'
+      - name: Run tests
+        run: |
+          xcodebuild -project apex/apex.xcodeproj \
+            -scheme apex \
+            -destination 'platform=iOS Simulator,name=iPhone 14' \
+            test
