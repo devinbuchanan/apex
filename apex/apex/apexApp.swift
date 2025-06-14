@@ -14,7 +14,7 @@ struct apexApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabView()
                 .environment(\.managedObjectContext, stack.context)
         }
     }
