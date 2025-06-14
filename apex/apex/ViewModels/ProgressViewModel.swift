@@ -17,6 +17,7 @@ class ProgressViewModel: ObservableObject {
         do {
             awards = try stack.context.fetch(request)
         } catch {
+            print("Failed to fetch awards: \(error.localizedDescription)")
             awards = []
         }
     }
