@@ -1,8 +1,10 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject var auth: AuthViewModel
     @StateObject private var viewModel = ProfileViewModel()
     @State private var formData = UserProfileModel()
+    @State private var showUpgrade = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -49,6 +51,17 @@ struct ProfileView: View {
                     viewModel.updateProfile(with: formData)
                 }
                 .buttonStyle(.borderedProminent)
+
+                if auth.isGuest {
+                    Button("Upgrade Account") {
+                        showUpgrade = true
+                    }
+                    .buttonStyle(.bordered)
+                    .sheet(isPresented: $showUpgrade) {
+                        UpgradeAccountView()
+                            .environmentObject(auth)
+                    }
+                }
             } else {
                 Text("No profile available")
             }
@@ -60,4 +73,5 @@ struct ProfileView: View {
 #Preview {
     ProfileView()
         .environment(\.managedObjectContext, CoreDataStack.shared.context)
+        .environmentObject(AuthViewModel())
 }

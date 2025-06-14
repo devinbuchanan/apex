@@ -6,6 +6,7 @@ This repository contains the Apex sample iOS application. The project is a simpl
 - **iCloud / CloudKit** for data syncing
 - **HealthKit** to access workout data
 - **SiriKit** so you can start workouts with your voice
+- **Authentication** with Sign in with Apple, email magic link, and guest mode
 
 The `Info.plist` includes usage descriptions required by iOS. See `apex/Info.plist` for details.
 
