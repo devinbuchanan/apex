@@ -399,7 +399,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GYM2RX99U4;
 				ENABLE_PREVIEWS = YES;
-                               CODE_SIGN_ENTITLEMENTS = apex/apex.entitlements;
+                               CODE_SIGN_ENTITLEMENTS = apex.entitlements;
                                INFOPLIST_FILE = apex/Info.plist;
                                LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -426,7 +426,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GYM2RX99U4;
 				ENABLE_PREVIEWS = YES;
-                               CODE_SIGN_ENTITLEMENTS = apex/apex.entitlements;
+                               CODE_SIGN_ENTITLEMENTS = apex.entitlements;
                                INFOPLIST_FILE = apex/Info.plist;
                                LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
