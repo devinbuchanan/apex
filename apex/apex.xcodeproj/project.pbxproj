@@ -400,7 +400,7 @@
 				DEVELOPMENT_TEAM = GYM2RX99U4;
 				ENABLE_PREVIEWS = YES;
                                CODE_SIGN_ENTITLEMENTS = apex.entitlements;
-                               INFOPLIST_FILE = apex/Info.plist;
+                               INFOPLIST_FILE = Info.plist;
                                LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -427,7 +427,7 @@
 				DEVELOPMENT_TEAM = GYM2RX99U4;
 				ENABLE_PREVIEWS = YES;
                                CODE_SIGN_ENTITLEMENTS = apex.entitlements;
-                               INFOPLIST_FILE = apex/Info.plist;
+                               INFOPLIST_FILE = Info.plist;
                                LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
