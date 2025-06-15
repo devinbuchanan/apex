@@ -7,7 +7,7 @@ class OnboardingCoordinator: ObservableObject {
         case age, gender, height, weight, goal, activity, dietaryPrefs, glp1, coachPersonality, healthKit
     }
 
-    @Published var step: Step
+    @Published var step: Step = .age
     @Published var age: String = ""
     @Published var gender: String = ""
     @Published var height: String = ""
@@ -27,7 +27,8 @@ class OnboardingCoordinator: ObservableObject {
 
     init(stack: CoreDataStack = .shared) {
         self.stack = stack
-        step = Step(rawValue: savedStep) ?? .age
+        let storedStep = UserDefaults.standard.integer(forKey: "onboardingStep")
+        step = Step(rawValue: storedStep) ?? .age
     }
 
     func next() {
