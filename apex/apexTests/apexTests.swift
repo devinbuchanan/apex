@@ -13,51 +13,9 @@ import CoreData
 /// Validates core functionality including CoreData operations and model conversions
 struct apexTests {
     
-    // Helper function to create a test CoreData model matching the app's model
-    private func createTestModel() -> NSManagedObjectModel {
-        let model = NSManagedObjectModel()
-        
-        func attribute(name: String, type: NSAttributeType, optional: Bool = false) -> NSAttributeDescription {
-            let attr = NSAttributeDescription()
-            attr.name = name
-            attr.attributeType = type
-            attr.isOptional = optional
-            return attr
-        }
-        
-        let user = NSEntityDescription()
-        user.name = "UserProfile"
-        user.managedObjectClassName = NSStringFromClass(UserProfile.self)
-        user.properties = [
-            attribute(name: "id", type: .UUIDAttributeType),
-            attribute(name: "name", type: .stringAttributeType),
-            attribute(name: "age", type: .integer16AttributeType),
-            attribute(name: "currentWeight", type: .doubleAttributeType),
-            attribute(name: "startingWeight", type: .doubleAttributeType),
-            attribute(name: "goalWeight", type: .doubleAttributeType),
-            attribute(name: "bodyFatPercentage", type: .doubleAttributeType),
-            attribute(name: "height", type: .doubleAttributeType),
-            attribute(name: "joinDate", type: .dateAttributeType),
-            attribute(name: "gender", type: .stringAttributeType, optional: true),
-            attribute(name: "goal", type: .stringAttributeType, optional: true),
-            attribute(name: "activityLevel", type: .stringAttributeType, optional: true),
-            attribute(name: "dietaryPreferences", type: .stringAttributeType, optional: true),
-            attribute(name: "usesGLP1", type: .booleanAttributeType),
-            attribute(name: "coachPersonality", type: .stringAttributeType, optional: true),
-            attribute(name: "onboardingStep", type: .integer16AttributeType),
-            attribute(name: "hasCompletedOnboarding", type: .booleanAttributeType),
-            attribute(name: "accountType", type: .stringAttributeType, optional: true),
-            attribute(name: "syncHealthKit", type: .booleanAttributeType)
-        ]
-        
-        model.entities = [user]
-        return model
-    }
-
-    @Test func coreDataAddDelete() async throws {
-        // Create a test model matching the app's model for consistent testing
-        let model = createTestModel()
-        
+    // Helper function to create test CoreData context
+    private func createTestContext() -> NSManagedObjectContext {
+        let model = TestModelHelper.createTestModel()
         let container = NSPersistentCloudKitContainer(name: "TestModel", managedObjectModel: model)
         let description = NSPersistentStoreDescription()
         description.type = NSInMemoryStoreType
@@ -67,7 +25,11 @@ struct apexTests {
                 fatalError("Error: \(error)")
             }
         }
-        let context = container.viewContext
+        return container.viewContext
+    }
+
+    @Test func coreDataAddDelete() async throws {
+        let context = createTestContext()
 
         let profile = UserProfile(context: context)
         profile.id = UUID()
@@ -93,19 +55,7 @@ struct apexTests {
     }
     
     @Test func userProfileModelConversion() async throws {
-        // Test UserProfile to UserProfileModel conversion
-        let model = createTestModel()
-        
-        let container = NSPersistentCloudKitContainer(name: "TestModel", managedObjectModel: model)
-        let description = NSPersistentStoreDescription()
-        description.type = NSInMemoryStoreType
-        container.persistentStoreDescriptions = [description]
-        container.loadPersistentStores { _, error in
-            if let error = error {
-                fatalError("Error: \(error)")
-            }
-        }
-        let context = container.viewContext
+        let context = createTestContext()
         
         // Create a UserProfile
         let profile = UserProfile(context: context)
